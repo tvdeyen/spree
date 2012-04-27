@@ -15,21 +15,28 @@ module Spree
     end
 
     def update_address
-      if @order.update_attributes(object_params)
-        fire_event('spree.checkout.update')
-        @order.next
-        state_callback(:after)
-        p @order.state
-        redirect_to [@order.state, :checkout]
-      else
-        render :edit
-      end
+      update_order!
     end
 
     def delivery
       render :edit
     end
 
+    def update_delivery
+      update_order!
+    end
+
+    def payment
+      render :edit
+    end
+
+    def update_payment
+      update_order!
+    end
+
+    def complete
+      redirect_to(completion_route)
+    end
 
     # Updates the order and advances to the next state (when possible.)
     def update
@@ -57,6 +64,17 @@ module Spree
     end
 
     private
+      def update_order!
+        if @order.update_attributes(object_params)
+          fire_event('spree.checkout.update')
+          @order.next
+          state_callback(:after)
+          redirect_to [@order.state, :checkout]
+        else
+          render :edit
+        end
+      end
+
       # Provides a route to redirect after order completion
       def completion_route
         order_path(@order)

@@ -110,6 +110,10 @@ module Spree
 
     end
 
+    def next_state
+      next_transition.to
+    end
+
     # Use this method in other gems that wish to register their own custom logic that should be called after Order#updat
     def self.register_update_hook(hook)
       self.update_hooks.add(hook)

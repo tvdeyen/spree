@@ -10,6 +10,27 @@ module Spree
 
     respond_to :html
 
+    def address
+      render :edit
+    end
+
+    def update_address
+      if @order.update_attributes(object_params)
+        fire_event('spree.checkout.update')
+        @order.next
+        state_callback(:after)
+        p @order.state
+        redirect_to [@order.state, :checkout]
+      else
+        render :edit
+      end
+    end
+
+    def delivery
+      render :edit
+    end
+
+
     # Updates the order and advances to the next state (when possible.)
     def update
       if @order.update_attributes(object_params)
@@ -59,7 +80,7 @@ module Spree
         redirect_to cart_path and return unless @order and @order.checkout_allowed?
         raise_insufficient_quantity and return if @order.insufficient_stock_lines.present?
         redirect_to cart_path and return if @order.completed?
-        @order.state = params[:state] if params[:state]
+        @order.state = params[:action] unless params[:action].include?("update")
         state_callback(:before)
       end
 

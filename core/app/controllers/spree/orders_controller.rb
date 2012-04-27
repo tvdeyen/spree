@@ -26,6 +26,12 @@ module Spree
       @order = current_order(true)
     end
 
+    def checkout
+      @order = current_order(true)
+      @order.next!
+      redirect_to [@order.state, :checkout]
+    end
+
     # Adds a new item to the order (creating a new order if none already exists)
     #
     # Parameters can be passed using the following possible parameter configurations:

@@ -11,9 +11,10 @@ Spree::Core::Engine.routes.draw do
   resources :states, :only => :index
 
   # non-restful checkout stuff
-  match '/checkout/update/:state', :to => 'checkout#update', :as => :update_checkout
-  match '/checkout/:state', :to => 'checkout#edit', :as => :checkout_state
-  match '/checkout', :to => 'checkout#edit', :state => 'address', :as => :checkout
+  %w(address delivery payment confirm complete).each do |state|
+    get "/checkout/#{state}", :to => "checkout##{state}", :as => "#{state}_checkout"
+    put "/checkout/update_#{state}", :to => "checkout#update_#{state}", :as => "update_#{state}_checkout"
+  end
 
   resources :orders do
     post :populate, :on => :collection
@@ -29,6 +30,8 @@ Spree::Core::Engine.routes.draw do
     end
 
   end
+
+  get '/checkout', :to => "orders#checkout", :as => :checkout_order
   get '/cart', :to => 'orders#edit', :as => :cart
   put '/cart', :to => 'orders#update', :as => :update_cart
   put '/cart/empty', :to => 'orders#empty', :as => :empty_cart

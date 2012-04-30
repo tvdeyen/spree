@@ -110,7 +110,6 @@ module Spree
         @order = current_order
         redirect_to cart_path and return unless @order and @order.checkout_allowed?
         raise_insufficient_quantity and return if @order.insufficient_stock_lines.present?
-        redirect_to cart_path and return if @order.completed?
         @order.state = params[:action] unless params[:action].include?("update")
         state_callback(:before)
       end

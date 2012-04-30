@@ -39,7 +39,7 @@ module Spree
       @order = Order.find(session[:order_id])
       flash.notice = t(:order_processed_successfully)
       flash[:commerce_tracking] = "nothing special"
-      redirect_to(order_path(order.to_param))
+      redirect_to(order_path(@order.to_param))
       state_callback(:after)
     end
 

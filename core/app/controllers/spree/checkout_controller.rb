@@ -40,7 +40,7 @@ module Spree
       flash.notice = t(:order_processed_successfully)
       flash[:commerce_tracking] = "nothing special"
       redirect_to(order_path(order.to_param))
-      session[:order_id] = nil
+      state_callback(:after)
     end
 
     def confirm
@@ -141,10 +141,6 @@ module Spree
 
       def before_payment
         current_order.payments.destroy_all if request.put?
-      end
-
-      def after_complete
-        session[:order_id] = nil
       end
 
       def rescue_from_spree_gateway_error

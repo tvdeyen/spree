@@ -5,7 +5,8 @@ module Spree
   class CheckoutController < BaseController
     ssl_required
 
-    before_filter :load_order
+    before_filter :load_order, :except => :complete
+
     rescue_from Spree::Core::GatewayError, :with => :rescue_from_spree_gateway_error
 
     respond_to :html

@@ -36,7 +36,19 @@ module Spree
     end
 
     def complete
-      redirect_to(completion_route)
+      order = Order.find(session[:order_id])
+      flash.notice = t(:order_processed_successfully)
+      flash[:commerce_tracking] = "nothing special"
+      redirect_to(order_path(order.to_param))
+      session[:order_id] = nil
+    end
+
+    def confirm
+      render :edit
+    end
+
+    def update_confirm
+      update_order!
     end
 
     # Updates the order and advances to the next state (when possible.)
